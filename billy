@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+import argparse
+from pathlib import Path
+from shutil import copyfile, copymode, copytree
+
+def daydir(day):
+    return Path(f"day{day}")
+
+def main(args):
+    if args.day:
+        new_daydir = daydir(args.day)
+        if new_daydir.exists():
+            print(f"Directory {new_daydir} already exists. Bailing.")
+            exit(1)
+
+        # -- Clone previous day --
+        if args.clone_day is not None:
+            clone_day = args.clone_day if args.clone_day else args.day - 1
+            clone_daydir = daydir(clone_day)
+            copytree(clone_daydir, new_daydir)
+
+        # -- New blank day --
+        else:
+            # Make dirs
+            input_dir = new_daydir / "input"
+            input_dir.mkdir(parents=True)
+
+            # Setup python script
+            part1_template = Path("resources/part1.py")
+            part1_script = new_daydir / "part1.py"
+            copyfile(part1_template, part1_script)
+            copymode(part1_template, part1_script)
+
+            # Create placeholders for input data
+            for f in ['part1.txt', 'test1.txt', 'part2.txt', 'test2.txt']:
+                (input_dir / f).touch()
+
+
+if __name__ == '__main__':
+    # Make sure we're running from this directory, since we build dirs with that expectation
+    script_dir = Path(__file__).resolve().parent
+    if script_dir != Path.cwd():
+        print(f"This script must be run from {script_dir}.")
+        exit(1)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--day', help='Day number', type=int, required=True)
+    parser.add_argument('-C', '--clone_day', help="Clone day as new day (use 0 for previous day)", type=int)
+    args = parser.parse_args()
+
+    main(args)
+

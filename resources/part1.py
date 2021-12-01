@@ -9,12 +9,12 @@ import re
 import math
 import collections
 from pathlib import Path
-from shutil import copyfile
+from shutil import copyfile, copymode
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 SCRIPT_PATH = Path(__file__).resolve()
-DEFAULT_INPUT_FILE = "input/" + SCRIPT_PATH.name.replace(".py", ".txt")
+DEFAULT_INPUT_FILE = SCRIPT_PATH.parent / "input" / SCRIPT_PATH.name.replace(".py", ".txt")
 STARTED_AT = None
 
 @dataclass
@@ -75,11 +75,13 @@ if __name__ == '__main__':
         if SCRIPT_PATH.name != "part1.py":
             print("Error: Only part1.py can be copied to part2.py")
             exit(1)
-        part2 = SCRIPT_PATH.replace("part1", "part2")
+        part2 = SCRIPT_PATH.with_name(SCRIPT_PATH.name.replace("part1", "part2"))
         if part2.exists():
-            print("Error: part2.py already exists. Delete first in order to copy part1.py again.")
+            print("Error: part2.py already exists. Delete part2.py first in order to copy again.")
             exit(1)
         copyfile(SCRIPT_PATH, part2)
+        copymode(SCRIPT_PATH, part2)
         print(f"Created {part2}.")
+        exit(0)
 
     main(args)

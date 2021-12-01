@@ -67,7 +67,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--part2', default=False, action="store_true", help="Copy part1 to part2")
-    parser.add_argument('-f', '--file', help='Input file, default: {}'.format(DEFAULT_INPUT_FILE), default=DEFAULT_INPUT_FILE, required=True)
+    parser.add_argument('-f', '--file', help='Input file, default: {}'.format(DEFAULT_INPUT_FILE), default=DEFAULT_INPUT_FILE)
     parser.add_argument('-v', '--verbose', help="Verbose output", default=False, action="store_true")
     args = parser.parse_args()
 
